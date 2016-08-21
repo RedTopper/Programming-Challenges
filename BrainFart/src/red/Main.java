@@ -79,7 +79,7 @@ public class Main {
 				break;
 			case "V":
 			case "v":
-				boolean verbose = true;
+				boolean verbose = true; //TODO: Implement verbose mode.
 			case "R":
 			case "r":
 				System.out.print("Program output:\n");
