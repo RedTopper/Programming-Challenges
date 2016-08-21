@@ -38,6 +38,7 @@ public class Main {
 			System.out.println("o: Open a program");
 			System.out.println("p: Print the loaded program");
 			System.out.println("r: Run the loaded program");
+			System.out.println("s: Swap EOL (currently " + memory.getEOL() + ")");
 			System.out.println("v: Run a program in VERBOSE mode (May spam the console!)");
 			System.out.println("q: Quit");
 			String user = getHumanString(reader, "Choice");
@@ -108,7 +109,7 @@ public class Main {
 						break;
 					case ',':
 						long startHuman = System.currentTimeMillis();
-						memory.set(getHumanChar(reader, "?"));
+						memory.set(reader);
 						startTime += System.currentTimeMillis() - startHuman;
 						programPointer++;
 						break;
@@ -163,6 +164,10 @@ public class Main {
 			case "Q":
 			case "q":
 				break main;
+			case "S":
+			case "s":
+				memory.swapEOL();
+				break;
 			default:
 				System.out.println("Not a valid command!");
 			}
@@ -179,26 +184,7 @@ public class Main {
 	 */
 	public static String getHumanString(Scanner reader, String prompt) {
 		System.out.print(prompt + ": ");
-		return reader.next();
-	}
-	
-	/**
-	 * Gets a char from the user via stdin.
-	 * This method blocks.
-	 * @param reader The Scanner (usually by System.in) that the input should be read from.
-	 * @param prompt A string to display to the user. ": " is appended to this string.
-	 * @return The first character of what the user typed in.
-	 */
-	public static char getHumanChar(Scanner reader, String prompt) {
-		System.out.print(prompt + ": ");
-		String user = reader.next();
-		if(user.equals("eof")){
-			return '\0';
-		} else if(user.equals("space")) {
-			return ' ';
-		} else {
-			return user.toCharArray()[0];
-		}
+		return reader.nextLine();
 	}
 	
 	/**
@@ -231,6 +217,9 @@ public class Main {
 		return user;
 	}
 	
+	/**
+	 * Prints the current loaded program.
+	 */
 	public static void printProgram() {
 		System.out.print("Current loaded program: ");
 		if(program == null) {

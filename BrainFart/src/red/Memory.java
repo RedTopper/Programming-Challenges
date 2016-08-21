@@ -1,16 +1,20 @@
 package red;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Memory {
 	
 	private ArrayList<char[]> memory;
 	private int memoryPointer = 0;
 	private int memoryPointerMax = 0;
+	private String user;
+	private int userPointer = 0;
 	private long reads = 0;
 	private long writes = 0;
 	private long pages = 0;
-
+	private char eol = '\0';
+	
 	/**
 	 * Creates memory for the program to run on.
 	 */
@@ -33,6 +37,9 @@ public class Memory {
 		memoryPointer = 0;
 		memory.clear();
 		memory.add(page());
+		user = null;
+		userPointer = 0;
+
 	}
 	
 	/**
@@ -48,9 +55,19 @@ public class Memory {
 	 * Sets the current value at the pointer.
 	 * @param value The value to set.
 	 */
-	public void set(char value) {
-		writes++;
-		memory.get(currentPage())[memoryPointer % Main.PAGE_SIZE] = value;
+	public void set(Scanner reader) {
+		if(user == null || userPointer >= user.length()) {
+			userPointer = 0;
+			System.out.print("User input: ");
+			user = reader.nextLine() + eol;
+		}
+		if(user.toCharArray()[userPointer] != eol) {
+			writes++;
+			memory.get(currentPage())[memoryPointer % Main.PAGE_SIZE] = user.toCharArray()[userPointer];
+		} else {
+			
+		}
+		userPointer++;
 	}
 	
 	/**
@@ -90,6 +107,18 @@ public class Memory {
 			memory.add(0, page());
 			memoryPointer += Main.PAGE_SIZE;
 		}
+	}
+	
+	public void swapEOL() {
+		if(eol == '\0') {
+			eol = '\n';
+		} else {
+			eol = '\0';
+		}
+	}
+	
+	public String getEOL() {
+		return (eol == '\0' ? "\"\\0\"" : "\"\\n\"");
 	}
 
 	/**
