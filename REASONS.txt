@@ -1,0 +1,11 @@
+This file is of no use to developers or programmers.
+It is simply a response to a specific person requesting that I state
+three reasons why I chose Java for this project.
+
+Reasons:
+1. Java is verbose: It makes it easy to see what a programmer is doing or where mistakes occur.
+2. Java is easy: Unlike C/C++, memory is managed by the GC.
+3. Java is familiar: I have used it in the past for games and other projects.
+
+Of course there are many reasons to use other languages (for example, C makes small binaries),
+but for this particular use, it makes it easy on me.
