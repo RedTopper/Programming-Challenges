@@ -64,7 +64,7 @@ public class Check {
 		}
 		
 		public Bound isBadKingAt(int row, int col, Color peiceColor) {
-			if(row < 0 || row >= HEIGHT) {
+			if(row < 0 || row >= WIDTH) {
 				return Bound.OUT_OF_BOUNDS;
 			}
 			if(col < 0 || col >= HEIGHT) {
