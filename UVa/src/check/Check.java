@@ -45,12 +45,14 @@ public class Check {
 		OUT_OF_BOUNDS
 	}
 	
-	public static final Direction streight[] = {Direction.U, Direction.R, Direction.D, Direction.L};
+	public static final Direction streight[] = {Direction.D, Direction.L, Direction.U, Direction.R};
 	public static final Direction diagnal[] = {Direction.UR, Direction.RD, Direction.DL, Direction.LU};
 	
 	private static class Board {
 		private char[][] board = new char[WIDTH][HEIGHT];
 		private boolean isEmpty = true;
+		private Board debugBoard;
+		private boolean debugMode = false;
 		
 		public boolean isEmpty() {
 			return isEmpty;
@@ -70,6 +72,9 @@ public class Check {
 			if(col < 0 || col >= HEIGHT) {
 				return Bound.OUT_OF_BOUNDS;
 			}
+			if(debugMode) {
+				debugBoard.board[row][col] = '*';
+			}
 			if(board[row][col] == peiceColor.getBadKing()) {
 				return Bound.BAD_KING;
 			} 
@@ -86,29 +91,57 @@ public class Check {
 				return Color.WHITE;
 			}
 		}
+
+		/*
+		public void startDebugging() {
+			debugBoard = new Board();
+			debugMode = true;
+		}
+
+		public void stopDebugging() {
+			if(debugMode) {
+				for(char[] row : debugBoard.board) {
+					for(char col : row) {
+						System.out.print(col);
+					}
+					System.out.println();
+				}
+				debugMode = false;
+			}
+		}
+		*/
 	}
 	
 	public static void main(String[] args) {
 		Scanner reader = new Scanner(System.in);
+		int gameNumber = 0;
 		while (true) {
+			gameNumber++;
 			Board board = new Board();
 			for(int row = 0; row < HEIGHT; row++) {
 				char[] line = reader.nextLine().toCharArray();
-				for(int col = 0; col < WIDTH; col++) {
-					board.writeBoard(row, col, line[col]);
+				if(line.length == 8) {
+					for(int col = 0; col < WIDTH; col++) {
+						board.writeBoard(row, col, line[col]);
+					}
+				} else {
+					row--;
 				}
 			}
 			if(board.isEmpty()) break;
 			boolean check = false;
+			int row = 0, col = 0;
 			out:
-			for(int row = 0; row < HEIGHT; row++) {
-				for(int col = 0; col < WIDTH; col++) {
+			for(row = 0; row < HEIGHT; row++) {
+				for(col = 0; col < WIDTH; col++) {
 					switch(board.board[row][col]) {
 					case 'p':
+						//board.startDebugging();
 						if(board.isBadKingAt(row + 1, col - 1, board.getColorAt(row, col)) == Bound.BAD_KING) {check = true; break out;}
 						if(board.isBadKingAt(row + 1, col + 1, board.getColorAt(row, col)) == Bound.BAD_KING) {check = true; break out;}
 						break;
 					case 'P':
+						//board.startDebugging();
 						if(board.isBadKingAt(row - 1, col - 1, board.getColorAt(row, col)) == Bound.BAD_KING) {check = true; break out;}
 						if(board.isBadKingAt(row - 1, col + 1, board.getColorAt(row, col)) == Bound.BAD_KING) {check = true; break out;}
 						break;
@@ -116,14 +149,15 @@ public class Check {
 					case 'Q':
 					case 'b':
 					case 'B':
+						//board.startDebugging();
 						for(int direction = 0; direction < 4; direction++) {
 							for(int distance = 1; distance < HEIGHT; distance++) {
 								Bound bound = board.isBadKingAt(row + distance * diagnal[direction].getRow(), col + distance * diagnal[direction].getCol(), board.getColorAt(row, col));
 								if(bound == Bound.SOMETHING ||
-								   bound == Bound.OUT_OF_BOUNDS ||
-								   bound == Bound.BAD_KING){
+								   bound == Bound.OUT_OF_BOUNDS){
 									break;
-								} else {
+								} 
+								if(bound == Bound.BAD_KING){
 									check = true;
 									break out;
 								}
@@ -132,14 +166,43 @@ public class Check {
 						if(board.board[row][col] != 'q' || board.board[row][col] != 'Q') break;
 					case 'r':
 					case 'R':
+						//board.startDebugging();
 						for(int direction = 0; direction < 4; direction++) {
 							for(int distance = 1; distance < HEIGHT; distance++) {
 								Bound bound = board.isBadKingAt(row + distance * streight[direction].getRow(), col + distance * streight[direction].getCol(), board.getColorAt(row, col));
 								if(bound == Bound.SOMETHING ||
-								   bound == Bound.OUT_OF_BOUNDS ||
-								   bound == Bound.BAD_KING){
+								   bound == Bound.OUT_OF_BOUNDS){
 									break;
-								} else {
+								}
+								if(bound == Bound.BAD_KING){
+									check = true;
+									break out;
+								}
+							}
+						}
+						break;
+					case 'k':
+					case 'K':
+						//board.startDebugging();
+						for(int direction = 0; direction < 8; direction++) {
+							Bound bound = board.isBadKingAt(row + Direction.values()[direction].getRow(), col + Direction.values()[direction].getCol(), board.getColorAt(row, col));
+							if(bound == Bound.BAD_KING){
+								check = true;
+								break out;
+							}
+						}
+						break;
+					case 'n':
+					case 'N':
+						//board.startDebugging();
+						for(int direction = 0; direction < 4; direction++) {
+							for(int adder = 0; adder < 2; adder++) {
+								int position = direction + adder;
+								if(position >= 4) {
+									position = 0;
+								}
+								Bound bound = board.isBadKingAt(row + diagnal[direction].getRow() * 2 + streight[position].getRow(), col + diagnal[direction].getCol() * 2 + streight[position].getCol(), board.getColorAt(row, col));
+								if(bound == Bound.BAD_KING){
 									check = true;
 									break out;
 								}
@@ -147,12 +210,17 @@ public class Check {
 						}
 						break;
 					}
+					//board.stopDebugging();
 				}
 			}
+			System.out.print("Game #" + gameNumber + ": ");
 			if(check) {
-				System.out.println("Kill yourself");
+				//board.stopDebugging();
+				//System.out.println("The thing at (" + row + "," + col + ") is putting the king in check!");
+				System.out.println((board.getColorAt(row, col) == Color.WHITE ? "black" : "white") + " king is in check.");
 			} else {
-				System.out.println("Don't do it!");
+				//System.out.println("Nothing to see here.");
+				System.out.println("no king is in check.");
 			}
 		}
 		reader.close();
