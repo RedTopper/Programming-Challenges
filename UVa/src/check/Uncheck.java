@@ -105,6 +105,8 @@ public class Uncheck {
 		boolean check = false;
 		if(direction != null) {
 			switch (board[checkRow][checkCol]) {
+			case '.':
+				return Bound.NOTHING;
 			case 'r':
 			case 'R':
 				if(contains(diagnal, direction)) return Bound.SOMETHING;
@@ -125,18 +127,17 @@ public class Uncheck {
 				if(distance == 1 && currentWhite != checkWhite) {
 					if(board[checkRow][checkCol] == 'p' && checkRow < row) {
 						check = true;
-					} else if (board[checkRow][checkCol] == 'P' && checkRow > row ) {
+					} 
+					if (board[checkRow][checkCol] == 'P' && checkRow > row ) {
 						check = true;
-					} else {
-						return Bound.SOMETHING;
 					}
-				} else {
-					return Bound.SOMETHING;
 				}
 				break;
 			}
 		} else {
 			switch (board[checkRow][checkCol]) {
+			case '.':
+				return Bound.NOTHING;
 			case 'n':
 			case 'N':
 				check = currentWhite != checkWhite;
@@ -146,8 +147,9 @@ public class Uncheck {
 		if(check) {
 			System.out.println("Game #" + gameNumber + ": " + (currentWhite ? "white" : "black") + " king is in check.");
 			return Bound.BAD_KING;
+		} else {
+			return Bound.SOMETHING;
 		}
-		return Bound.NOTHING;
 	}
 	
 	private static boolean contains(Direction[] directions, Direction direction) {
