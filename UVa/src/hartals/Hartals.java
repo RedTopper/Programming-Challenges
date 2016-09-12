@@ -30,5 +30,6 @@ public class Hartals {
 			}
 			System.out.println(numberOfDays);
 		}
+		reader.close();
 	}
 }
