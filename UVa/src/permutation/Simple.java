@@ -16,7 +16,7 @@ public class Simple {
 					if(first[i] == second[j] && first[i] != 0 && second[j] != 0) {
 						output += first[i];
 						first[i] = 0;
-						second[i] = 0;
+						second[j] = 0;
 					}
 				}
 			}
