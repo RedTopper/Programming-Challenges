@@ -57,5 +57,4 @@ public class Flapjack {
 		}
 		scan.close();
 	}
-
 }
