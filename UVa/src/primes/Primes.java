@@ -33,7 +33,9 @@ public class Primes {
 		reader.close();
 	}
 	
-	//Generation of primes found at http://stackoverflow.com/q/586284
+	//Generation of primes found at http://stackoverflow.com/q/586284.
+	//I needed if it was composite and the prime number, so a new class
+	//Metadata was created to return them both.
 	private static Metadata generatePrimes(int max) {
 	    boolean[] isComposite = new boolean[max + 1];
 	    for (int i = 2; i * i <= max; i++) {
